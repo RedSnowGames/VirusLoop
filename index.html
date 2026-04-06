@@ -68,8 +68,8 @@
 </div>
 
 <script>
-    // ИСПРАВЛЕНО: Добавлены = и кавычки
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxE3celFRJn1vDEpcCWnW6nq1eYesNR_CkqT-tzVjv1pW_Or5ppxWdoN6FD7OiA_CbT/exec';
+    // Твоя ссылка из Google (уже вставлена)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyE3ce1FRJn1vDEpcCWnW6nq1eYesNR_CkqT-tzVjv1pW_Or5ppxWdoN6FD7OiA_CbT/exec';
     const form = document.getElementById('waitlist-form');
     const counterElement = document.getElementById('waitlist-counter');
 
@@ -81,11 +81,11 @@
                 counterElement.innerText = 1248 + data.count;
             })
             .catch(() => {
-                counterElement.innerText = "1248"; // Если ошибка, просто ставим базу
+                counterElement.innerText = "1248"; 
             });
     });
 
-    // 2. Отправка формы
+    // 2. Отправка формы с проверкой на дубликаты
     form.addEventListener('submit', e => {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
@@ -95,9 +95,17 @@
       fetch(scriptURL, { method: 'POST', body: new FormData(form)})
         .then(response => response.json())
         .then(data => {
-            form.classList.add('hidden');
-            document.getElementById('success-msg').classList.remove('hidden');
-            counterElement.innerText = 1248 + data.count;
+            if (data.result === 'exists') {
+                // Если почта уже есть в таблице
+                alert('Эта почта уже внесена в систему ожидания!');
+                btn.disabled = false;
+                btn.innerText = 'Ждать релиза';
+            } else {
+                // Если почта новая
+                form.classList.add('hidden');
+                document.getElementById('success-msg').classList.remove('hidden');
+                counterElement.innerText = 1248 + data.count;
+            }
         })
         .catch(error => {
             console.error('Error!', error.message);
