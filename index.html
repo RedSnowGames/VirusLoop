@@ -27,11 +27,13 @@
     </nav>
 
     <!-- ГЛАВНЫЙ ЭКРАН -->
-    <header class="flex flex-col items-center justify-center px-4 text-center mb-20">
-        <!-- ГЛАВНОЕ ЛОГО ИГРЫ (ШИРОКОЕ 4К) -->
-        <div class="max-w-5xl w-full mb-6">
-            <img src="LOGO_VL Small.png" alt="VirusLoop" class="w-full h-auto drop-shadow-[0_0_30px_rgba(45,253,156,0.2)]">
-        </div>
+    <!-- Анимированное Лого (MP4) -->
+<div class="max-w-5xl w-full mb-6">
+    <video autoplay loop muted playsinline class="w-full h-auto drop-shadow-[0_0_35px_rgba(45,253,156,0.4)]">
+        <source src="VL_LogoSmall.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+    </video>
+</div>
 
         <p class="text-xl md:text-2xl text-gray-300 max-w-2xl mb-10 font-light">
             Цикл запущен. Вирус мутирует. Сможешь ли ты разорвать петлю или станешь частью кода?
