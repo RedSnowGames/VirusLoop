@@ -1,1 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirusLoop | Red Snow Games</title>
+    <link rel="icon" type="image/png" href="redsnow.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { 
+            background-color: #050505; 
+            color: #eee; 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        .green-glow { text-shadow: 0 0 20px rgba(45, 253, 156, 0.4); }
+        .bg-card { background: rgba(20, 20, 20, 0.8); border: 1px solid #222; }
+        .screenshot-card { transition: all 0.3s ease; border: 1px solid #333; }
+        .screenshot-card:hover { border-color: #2dfd9c; transform: scale(1.02); }
+    </style>
+</head>
+<body class="flex flex-col items-center">
+    
+    <!-- Переключатель языков -->
+<div class="fixed top-6 right-6 z-[100] flex items-center bg-black/60 backdrop-blur-md border border-white/10 py-2 px-4 rounded-full shadow-2xl space-x-4">
+    <!-- RU (активный) -->
+    <a href="index.html" class="text-[10px] font-black tracking-[0.2em] text-[#2dfd9c] hover:scale-110 transition-transform">RU</a>
+    
+    <span class="w-[1px] h-3 bg-white/20"></span>
+    
+    <!-- UZ -->
+    <a href="index_uz.html" class="text-[10px] font-black tracking-[0.2em] text-gray-500 hover:text-white hover:scale-110 transition-all">UZ</a>
+    
+    <span class="w-[1px] h-3 bg-white/20"></span>
+    
+    <!-- EN -->
+    <a href="index_en.html" class="text-[10px] font-black tracking-[0.2em] text-gray-500 hover:text-white hover:scale-110 transition-all">EN</a>
+</div>
 
+    <!-- Анимированное Лого (Адаптивное) -->
+<div class="w-full overflow-hidden leading-[0] relative">
+    
+    <!-- Версия для ПК (показывается только на больших экранах) -->
+    <video autoplay loop muted playsinline poster="LOGO_VL Small.png" class="hidden md:block w-full h-auto shadow-[0_0_50px_rgba(45,253,156,0.2)]">
+        <source src="VL_LOGO_S.mp4" type="video/mp4">
+    </video>
+
+    <!-- Версия для МОБИЛЫ (показывается только на маленьких экранах) -->
+    <video autoplay loop muted playsinline poster="LOGO_VL Small.png" class="block md:hidden w-full h-auto shadow-[0_0_30px_rgba(45,253,156,0.2)]">
+        <source src="VL_LOGO_M.mp4" type="video/mp4">
+    </video>
+
+</div>
+   
+       <br><div class="w-full flex justify-center px-4">
+    <p class="text-xs md:text-sm text-gray-500 max-w-4xl mb-14 tracking-[0.4em] uppercase leading-[2.5] font-medium text-center">
+        Цикл запущен. Вирус мутирует.<br>
+        <span class="opacity-60 text-[10px] md:text-xs">Сможешь ли ты разорвать петлю или станешь частью кода?</span>
+    </p>
+</div>
+
+    <!-- Твой личный Вейтлист (Google Sheets) -->
+<div class="max-w-md mx-auto bg-black/40 border border-[#2dfd9c]/20 p-8 rounded-3xl backdrop-blur-sm shadow-2xl text-center">
+    <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-6 font-bold">Система ожидания активна</h3>
+    
+    <form id="waitlist-form" class="flex flex-col gap-4">
+        <input type="email" name="email" placeholder="Напиши свой Email" required 
+            class="bg-black/60 border border-gray-800 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-[#2dfd9c] transition-all text-center">
+        <button type="submit" id="submit-btn" 
+            class="bg-[#2dfd9c] text-black font-black py-4 rounded-xl uppercase tracking-widest hover:scale-[1.02] transition-transform active:scale-95">
+            Ждать релиза
+        </button>
+    </form>
+
+    <div id="success-msg" class="hidden text-[#2dfd9c] font-bold mt-4 uppercase text-[10px] tracking-widest animate-pulse">
+        Ты в системе. До встречи в Ташкенте.
+    </div>
+
+    <!-- Живой счетчик -->
+    <p class="mt-8 text-[10px] text-gray-600 uppercase tracking-[0.3em]">
+        Ожидают релиза: <span id="waitlist-counter" class="text-[#2dfd9c] text-sm">Загрузка...</span>
+    </p>
+</div>
+
+<script>
+    // Твоя ссылка из Google (уже вставлена)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx8bwBq7C4eiiYiPl8-xvDmAGEnXLJK6rsTcVPgg0GamZJl4x26GlDfFycDPVSV2NQG/exec';
+    const form = document.getElementById('waitlist-form');
+    const counterElement = document.getElementById('waitlist-counter');
+
+    // 1. Получаем число людей СРАЗУ при загрузке страницы
+    window.addEventListener('load', () => {
+        fetch(scriptURL)
+            .then(response => response.json())
+            .then(data => {
+                counterElement.innerText = 1248 + data.count;
+            })
+            .catch(() => {
+                counterElement.innerText = "1248"; 
+            });
+    });
+
+    // 2. Отправка формы с проверкой на дубликаты
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerText = 'Загрузка...';
+
+      fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'exists') {
+                // Если почта уже есть в таблице
+                alert('Эта почта уже внесена в систему ожидания!');
+                btn.disabled = false;
+                btn.innerText = 'Ждать релиза';
+            } else {
+                // Если почта новая
+                form.classList.add('hidden');
+                document.getElementById('success-msg').classList.remove('hidden');
+                counterElement.innerText = 1248 + data.count;
+            }
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert('Ошибка! Попробуй еще раз.');
+            btn.disabled = false;
+            btn.innerText = 'Ждать релиза';
+        });
+    });
+</script>
+    
+    </header>
+
+    <!-- СЕКЦИЯ: О ПРОЕКТЕ (ТВОЙ ТЕКСТ) -->
+    <section id="about" class="py-10 px-4 max-w-5xl w-full">
+        <div class="grid md:grid-cols-2 gap-8 items-start text-gray-300">
+            <div class="bg-card p-8 rounded-2xl">
+                <h3 class="text-[#2dfd9c] font-bold mb-4 uppercase tracking-tighter text-lg">Геймплей</h3>
+                <p class="leading-relaxed">Будущее мобильного гейминга в Узбекистане уже здесь! Red Snow Games представляет проект VirusLoop - первый масштабный PvPvE онлайн-шутер от третьего лица и зомби-выживания. Локация игры реальный город Ташкент. Теперь фаны PUBG, Free Fire, Fortnite, CS2 смогут играть шутер в родных и знакомых локациях.
+                Погрузись в атмосферу постапокалипсиса, где каждый уголок столицы таит смертельную опасность. Собирай команду, создавай кланы и участвуй в глобальных ивентах.</p>
+            </div>
+            <div class="bg-card p-8 rounded-2xl">
+                <h3 class="text-[#2dfd9c] font-bold mb-4 uppercase tracking-tighter text-lg">Особенности</h3>
+                <ul class="list-disc list-inside space-y-2 text-sm md:text-base">
+                    <li><span class="font-bold text-white">PvPvE онлайн:</span> Сражайся с реальными игроками и выживай среди тысяч зомби-ботов.</li>
+                    <li><span class="font-bold text-white">Реальный Ташкент:</span> Сквер Амира Темура и махалли воссозданы вручную.</li>
+                    <li><span class="font-bold text-white">Настоящая техника:</span> Nexia, Damas, автобусы Isuzu, танки и вертолеты.</li>
+                    <li><span class="font-bold text-white">Консольный графон:</span> Мощь движка в 4K и 60 FPS прямо в кармане.</li>
+                    <li><span class="font-bold text-white">Твой стиль:</span> Скины, кейсы и честный рынок — торгуй лутом!</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ: ТРЕЙЛЕР (ИСПРАВЛЕННАЯ ССЫЛКА) -->
+    <section class="py-20 px-4 w-full max-w-5xl">
+        <h2 class="text-2xl font-bold mb-8 text-center uppercase tracking-widest text-gray-500">Официальный трейлер</h2>
+        <div class="aspect-video bg-black rounded-3xl overflow-hidden border-4 border-gray-900 shadow-2xl">
+            <iframe class="w-full h-full" src="https://www.youtube.com/embed/tp3ZL66fjZQ" title="VirusLoop Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <!-- ГАЛЕРЕЯ СКРИНШОТОВ (SHOT_01 - SHOT_08) -->
+    <section class="py-10 px-4 max-w-6xl w-full">
+        <h2 class="text-2xl font-bold mb-10 text-center uppercase tracking-widest text-gray-500">Скриншоты системы</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<img src="Shot_01.png" onclick="openLightbox(0)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_02.png" onclick="openLightbox(1)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_03.png" onclick="openLightbox(2)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_04.png" onclick="openLightbox(3)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_05.png" onclick="openLightbox(4)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_06.png" onclick="openLightbox(5)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_07.png" onclick="openLightbox(6)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+<img src="Shot_08.png" onclick="openLightbox(7)" class="rounded-lg screenshot-card aspect-video object-cover w-full cursor-pointer">
+        </div>
+    </section>
+
+   <!-- ПОДВАЛ (С ЛОГОТИПАМИ В УГЛАХ) -->
+    <footer class="relative py-20 border-t border-gray-900 w-full text-center text-gray-600">
+        
+        <!-- Лого IT Park (Слева снизу) -->
+        <div class="absolute bottom-6 left-6 md:left-10 pointer-events-none">
+            <img src="itpark.png" alt="IT Park" class="h-8 md:h-16 object-contain">
+        </div>
+
+        <!-- Флаг Узбекистана (Справа снизу) -->
+        <div class="absolute bottom-6 right-6 md:right-10 pointer-events-none">
+            <img src="flag.png" alt="Uzbekistan" class="h-5 md:h-10 object-contain shadow-sm">
+        </div>
+
+        <!-- Основной контент футера -->
+        <img src="Red.png" alt="Red Snow Games" class="h-20 md:h-24 mx-auto mb-8">
+        <p class="mb-4 text-xs uppercase tracking-[0.3em]">© 2026 Red Snow Games. All Rights Reserved.</p>
+        
+        <div class="flex flex-wrap justify-center gap-6 md:gap-10 text-sm mt-8">
+            <a href="https://www.instagram.com/redsnow_games/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-[#2dfd9c] transition-all duration-300 font-medium border-b border-transparent hover:border-[#2dfd9c]/40 pb-1">Instagram</a>
+            <a href="https://www.youtube.com/@RedSnow_Games" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-[#2dfd9c] transition-all duration-300 font-medium border-b border-transparent hover:border-[#2dfd9c]/40 pb-1">YouTube</a>
+            <a href="https://www.tiktok.com/@redsnow_games" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-[#2dfd9c] transition-all duration-300 font-medium border-b border-transparent hover:border-[#2dfd9c]/40 pb-1">TikTok</a>
+            <a href="https://t.me/RedSnow_Games" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-[#2dfd9c] transition-all duration-300 font-medium border-b border-transparent hover:border-[#2dfd9c]/40 pb-1">Telegram</a>
+            <a href="mailto:isaacrustamovich@gmail.com" class="text-gray-300 hover:text-[#2dfd9c] transition-all duration-300 font-medium border-b border-transparent hover:border-[#2dfd9c]/40 pb-1 uppercase tracking-tighter">Email</a>
+        </div>
+    </footer>
+</body>
+ <!-- Окно просмотра галереи -->
+<div id="lightbox" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4">
+    <!-- Закрыть -->
+    <button onclick="closeModal()" class="absolute top-5 right-10 text-white text-5xl hover:text-[#2dfd9c] z-[110]">&times;</button>
+    
+    <!-- Назад -->
+    <button onclick="prevImage()" class="absolute left-5 text-white text-5xl hover:text-[#2dfd9c] p-4 z-[110] transition-colors">&lsaquo;</button>
+    
+    <!-- Картинка -->
+    <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl transition-all duration-300">
+    
+    <!-- Вперед -->
+    <button onclick="nextImage()" class="absolute right-5 text-white text-5xl hover:text-[#2dfd9c] p-4 z-[110] transition-colors">&rsaquo;</button>
+</div>
+<script>
+    // Список твоих скриншотов
+    const images = [
+        "Shot_01.png", "Shot_02.png", "Shot_03.png", "Shot_04.png", 
+        "Shot_05.png", "Shot_06.png", "Shot_07.png", "Shot_08.png"
+    ];
+    let currentIndex = 0;
+
+    function openLightbox(index) {
+        currentIndex = index;
+        updateImage();
+        document.getElementById('lightbox').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('lightbox').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function updateImage() {
+        const img = document.getElementById('lightbox-img');
+        img.src = images[currentIndex];
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length; // Листает по кругу
+        updateImage();
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length; // Листает по кругу назад
+        updateImage();
+    }
+
+    // Управление клавиатурой (Стрелки и Escape)
+    document.addEventListener('keydown', (e) => {
+        if (document.getElementById('lightbox').classList.contains('hidden')) return;
+        if (e.key === "ArrowRight") nextImage();
+        if (e.key === "ArrowLeft") prevImage();
+        if (e.key === "Escape") closeModal();
+    });
+</script>
+</html>
