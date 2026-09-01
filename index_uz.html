@@ -46,7 +46,7 @@
 
     <!-- Твой личный Вейтлист (Google Sheets) -->
 <div class="max-w-md mx-auto bg-black/40 border border-[#2dfd9c]/20 p-8 rounded-3xl backdrop-blur-sm shadow-2xl text-center">
-    <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-6 font-bold">Система ожидания активна</h3>
+    <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-6 font-bold">Kutish tizimi faol</h3>
     
     <form id="waitlist-form" class="flex flex-col gap-4">
         <input type="email" name="email" placeholder="Твой Email" required 
@@ -90,7 +90,7 @@
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.innerText = 'Загрузка...';
+      btn.innerText = 'Yuklanmoqda...';
 
       fetch(scriptURL, { method: 'POST', body: new FormData(form)})
         .then(response => response.json())
