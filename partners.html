@@ -13,9 +13,23 @@
 </head>
 <body class="flex flex-col items-center px-4 py-20">
 
+    <!-- ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКОВ (чтобы не пропадал) -->
+    <div class="fixed top-6 right-6 z-[100] flex items-center bg-black/60 backdrop-blur-md border border-white/10 py-2 px-4 rounded-full">
+        <!-- В РУССКОЙ ВЕРСИИ КРАСИМ RU -->
+        <a href="partners.html" class="text-[10px] font-black tracking-[0.2em] text-[#2dfd9c]">RU</a> 
+        <span class="w-[1px] h-3 bg-white/20 mx-3"></span>
+        <!-- Ссылка на узбекскую КП -->
+        <a href="partners_uz.html" class="text-[10px] font-black tracking-[0.2em] text-gray-500 hover:text-white">UZ</a>
+        <span class="w-[1px] h-3 bg-white/20 mx-3"></span>
+        <!-- Ссылка на английскую КП -->
+        <a href="partners_en.html" class="text-[10px] font-black tracking-[0.2em] text-gray-500 hover:text-white">EN</a>
+    </div>
+
     <div class="max-w-4xl w-full">
-        <!-- Кнопка назад -->
-        <a href="index.html" class="text-gray-500 hover:text-[#2dfd9c] uppercase text-[10px] tracking-widest mb-20 inline-block">← Вернуться на главную</a>
+        <!-- КНОПКА НАЗАД (ведет на ту же языковую версию главной) -->
+        <a href="index.html" class="text-gray-500 hover:text-[#2dfd9c] uppercase text-[10px] tracking-widest mb-10 md:mb-20 inline-block transition-colors">
+            ← Вернуться на главную
+        </a>
 
         <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-10 text-gradient">Коммерческое предложение</h1>
 
